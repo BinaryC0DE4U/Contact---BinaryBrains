@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact - BinaryBrains</title>
+  <link rel="icon" href="Picture1.png" type="image/x-icon">
+  <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+  <style>
+
+    /* Loader Styles */
+    #loader-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+
+        /* DotLottie Player */
+    dotlottie-player {
+      width: 50vw;
+      height: 50vw;
+    }
+
+    /* Constant Zoom for Large Screens */
+    @media (min-width: 1200px) {
+        dotlottie-player {
+        transform: scale(3); /* Constant zoom */
+      }
+    }   
+
+
+    
+        /* Hide the page content initially */
+    #page-content {
+      display: none;
+    }
+    
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Courier New', Courier, monospace;
+      background-color: black;
+      color: #00FF00;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden; /* Hide scrollbars */
+      flex-direction: column; /* Arrange content vertically */
+    }
+    
+    
+    
+
+  .terminal {
+      position: relative;
+      width: 60%;
+      max-width: 700px;
+      height: 80%;
+      background-color: black;
+      padding: 20px;
+      border: 2px solid #00FF00;
+      border-radius: 5px;
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.7);
+      overflow: hidden;
+      color: #00FF00;
+      word-wrap: break-word;
+      margin-top: 80px; /* Adjust this value to increase the space */
+      z-index: 1;
+    }
+
+        /* Lottie Animation in Background */
+  .terminal::before {
+            
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 80%;
+      height: 80%;
+      background: transparent;
+      z-index: -1; /* Behind the terminal content */
+    }
+        
+                /* Lottie animation player inside terminal */
+    dotlottie-player {
+       position: absolute;     
+       width: 100%;
+       height: 100%;
+       z-index: -1;
+    }
+
+                /* Example of positioning the animation within the terminal */
+    .position-top-left {
+      top: 10px;
+      left: 10px;
+    }
+
+        
+    .line {
+      margin: 0;
+      padding: 0;
+      white-space: normal;
+      word-wrap: break-word;
+      width: 90%;
+      margin-top: 3px;
+      
+      
+    }
+
+    input[type="text"],
+    input[type="email"],
+    textarea {
+      background: black;
+      color: #00FF00;
+      border: 1px solid #00FF00;
+      padding: 10px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 16px;
+      width: 100%;
+      margin-bottom: 10px;
+      margin-top: 3px;
+      resize: none;
+      margin-left: 30px;
+      
+      
+    }
+
+    input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
+      outline:rgba(0, 255, 0, 0.7);
+      border-color: #FF00FF;
+      
+    }
+
+    button {
+      background-color: #00FF00;
+      color: black;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 18px;
+      width: 100%;
+      border-radius: 5px;
+      margin-left: 80px;
+      margin-top: -25px;
+      
+    }
+
+    button:hover {
+      background-color: #00CC00;
+    }
+
+    .prompt {
+      font-weight: bold;
+    }
+
+    .input-container {
+      display: grid;
+      gap: 15px;
+      grid-template-columns: 1fr;
+    }
+
+    .message {
+      padding: 10px;
+      border: 1px solid #00FF00;
+      margin-bottom: 10px;
+      margin-top: 10px;
+      width: 90%;
+      margin-left: 30px;
+      
+    }
+
+    .first-line, .last-line {
+      margin-left: 5px;
+      margin-bottom: 2px;
+    }
+
+    /* Navigation Styles */
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 7px 0;
+      background-color: black;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+      border-bottom: 1px solid #00FF00;
+      
+      
+    }
+
+    .navbar-logo {
+      color: #00FF00;
+      font-size: 24px;
+      margin-left: 10px;
+    }
+
+    .navbar-links {
+      display: flex;
+      gap: 15px;
+      margin-right: 15px;
+    }
+
+    .navbar-links a {
+      color: #00FF00;
+      text-decoration: none;
+      font-size: 18px;
+      position: relative;
+      display: inline-block;
+    }
+
+    /* Hacker-style hover effect */
+    .navbar-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px; /* Position the line just below the text */
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background-color: #FF00FF;
+      transition: width 0.3s, left 0.3s;
+    }
+
+    .navbar-links a:hover::after {
+      width: 100%;
+      left: 0;
+    }
+
+    .navbar-links a:hover {
+      color: #FF00FF;
+      text-shadow: 0 0 5px #FF00FF, 0 0 10px #FF00FF, 0 0 20px #FF00FF;
+      animation: glitch 1s infinite;
+    }
+
+    /* Glitch effect */
+    @keyframes glitch {
+      0% {
+        text-shadow: 0 0 5px #FF00FF, 0 0 10px #FF00FF, 0 0 20px #FF00FF;
+        transform: translate(2px, 0);
+      }
+      25% {
+        text-shadow: 0 0 10px #FF00FF, 0 0 20px #FF00FF, 0 0 30px #FF00FF;
+        transform: translate(-2px, 0);
+      }
+      50% {
+        text-shadow: 0 0 15px #FF00FF, 0 0 25px #FF00FF, 0 0 35px #FF00FF;
+        transform: translate(2px, 0);
+      }
+      75% {
+        text-shadow: 0 0 20px #FF00FF, 0 0 30px #FF00FF, 0 0 40px #FF00FF;
+        transform: translate(-2px, 0);
+      }
+      100% {
+        text-shadow: 0 0 5px #FF00FF, 0 0 10px #FF00FF, 0 0 20px #FF00FF;
+        transform: translate(2px, 0);
+      }
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+      .terminal {
+        width: 80%;
+        height: auto;
+      }
+
+      input[type="text"],
+      input[type="email"],
+      textarea {
+        width: 90%;
+        margin-left: 6%;
+      }
+
+      button {
+        font-size: 16px;
+        margin-left: 23px;
+      }
+
+      .navbar-logo {
+        font-size: 20px;
+      }
+
+      .navbar-links {
+        gap: 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        font-size: 14px;
+      }
+
+      .terminal {
+        padding: 10px;
+        width: 90%;
+        
+      }
+
+      input[type="text"],
+      input[type="email"],
+      textarea {
+        font-size: 14px;
+      }
+
+      button {
+        font-size: 14px;
+      }
+
+      .navbar-logo {
+        font-size: 18px;
+      }
+
+      .navbar-links {
+        gap: 8px;
+      }
+
+      .navbar-links a {
+        font-size: 16px;
+      }
+      .message{
+        margin-left: 20px;
+        width: 80%;
+      }
+    }
+
+    .navbar-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+}
+
+.logo-text {
+  font-size: 15px; /* Adjust the size */
+  color: #00FF00; /* Match the green theme */
+  margin-top: 2px; /* Space between logo and text */
+}
+.terminal dotlottie-player {
+            position: absolute;
+            top: 30%;
+            left: 30%;
+            width: 40%;
+            height: 40%;
+            z-index: -1; /* Put the animation behind the content */
+        }
+
+        /* Media query for smaller screens */
+        @media (max-width: 768px) {
+            .terminal dotlottie-player {
+                width: 160% !important;  /* Adjust the width for smaller screens */
+                height: 160% !important; /* Adjust the height for smaller screens */
+                left: -30% !important;   /* Adjust the left position for better centering */
+                top: -33% !important;    /* Adjust the top position */
+            }
+        }
+
+  </style>
+</head>
+<body>
+      <!-- Loader Container -->
+  <div id="loader-container">
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>    <dotlottie-player src="https://lottie.host/ae5cc702-4fa0-4d55-9477-d1d949c81e50/fJ57MOmAQL.lottie" background="#000000" speed="1" style="width: 300px; height: 300px" direction="1" playMode="normal" autoplay></dotlottie-player>
+  </div>
+  
+
+
+  <!-- Navigation Bar -->
+  <div class="navbar">
+    <div class="navbar-logo">
+        <img src="Picture1.png" alt="Logo" style="height: 40px; width: auto;">
+        <div class="logo-text">
+            <span>BinaryBrains</span>
+        </div>
+      </div>
+    <div class="navbar-links">
+      <a href="https://www.linkedin.com/in/mr-dhananjay-patil-0172902a2/">LinkedIn</a> <!-- Only LinkedIn Link -->
+    </div>
+    <div class="navbar-links">
+        <a href="https://x.com/binarycode4u">Twitter</a> <!-- Only Twitter Link -->
+      </div>
+          <div class="navbar-links">
+      <a href="https://github.com/BinaryC0DE4U">GitHub</a> <!-- Only GitHub Link -->
+    </div>
+  </div>
+
+  <div class="terminal">
+            <!-- Lottie Animation as Background (Player Component) -->
+        <dotlottie-player 
+            src="https://lottie.host/11764897-1dec-4698-aee0-06bfceb1885a/xBxZ7nAazn.lottie" 
+            background="#000000" 
+            speed="1" 
+            style="width: 40%; height: 40%; left: 30%; top: 30%;" 
+            direction="1" 
+            playMode="normal" 
+            loop 
+            autoplay>
+        </dotlottie-player>    
+        
+    <div class="line">
+      <span class="prompt">[user@hacker]:~$</span> <span>Welcome to the Contact Page</span>
+    </div>
+    <div class="line">
+      <span class="prompt">[user@hacker]:~$</span> <span>How can I help you?</span>
+    </div>
+
+    <div class="input-container">
+        <div class="input-container" style="margin-top: 20px;">
+            <div class="line">
+              <label for="name">Name:</label>
+              <input type="text" id="name" placeholder="Enter your name">
+            </div>
+      </div>
+
+      <div class="line">
+        <label for="email">Email:</label>
+        <input type="email" id="email" placeholder="Enter your email">
+      </div>
+
+      <div class="line">
+        <label for="message">Message:</label>
+        <textarea id="message" rows="4" placeholder="Enter your message"></textarea>
+      </div>
+
+      <div class="line" style="display: flex; justify-content: center; align-items: center;">
+        <button onclick="submitForm()">Submit</button>
+    </div>
+    </div>
+
+    <div id="output"></div>
+  </div>
+
+  <script>
+
+
+    function submitForm() {
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const message = document.getElementById('message').value;
+      const output = document.getElementById('output');
+
+      const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+      const isEmailValid = emailPattern.test(email);
+
+      if (name && email && message) {
+        if (!isEmailValid) {
+          output.innerHTML = `
+            <div class="message">
+              <span class="prompt">[user@hacker]:~$</span> <span style="color: red;">Error: Invalid email format!</span>
+            </div>
+          `;
+        } else {
+          const messageLines = message.split('\n');
+          const firstLine = messageLines[0];
+          const lastLine = messageLines[messageLines.length - 1];
+
+          output.innerHTML = ` 
+            <div class="message">
+              <span class="prompt">[user@hacker]:~$</span> <strong>Message Sent!</strong><br>
+              <strong>Name:</strong> ${name}<br>
+              <strong>Email:</strong> ${email}<br>
+              <strong>Message:</strong><br>
+              <div class="first-line"><strong>First Line:</strong> ${firstLine}</div>
+              <div class="last-line"><strong>Last Line:</strong> ${lastLine}</div>
+            </div>
+          `;
+        }
+      } else {
+        output.innerHTML = ` 
+          <div class="message">
+            <span class="prompt">[user@hacker]:~$</span> <span style="color: red;">Error: Please fill in all fields!</span>
+          </div>
+        `;
+      }
+    }
+
+    
+
+        // Hide the loader and show the content after animation is done
+        window.onload = () => {
+      setTimeout(() => {
+        document.getElementById('loader-container').style.display = 'none';
+        document.getElementById('page-content').style.display = 'block';
+      }, 4000); // Adjust this time to match the animation duration
+    };
+
+
+  </script>
+
+</body>
+</html>
